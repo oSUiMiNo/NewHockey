@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ball
+  - Wall
+  - Room
+  - LockOn
+  - Gun
+  - Pool
+  - Bullet
+  - Bullet0
+  - Bullet1
+  - Racket0
+  - Racket1
+  - Enemy
+  - Goal
+  - Racket
+  - Line0
+  - Line1
+  - Targets
+  - Photon
+  - RoomDoorWay
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - gun
+  - Racket_Collider
+  - Room
+  - Racket_Body
+  - Wall
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
