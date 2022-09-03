@@ -6,8 +6,8 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using DG.Tweening; 
-
+using DG.Tweening;
+using TMPro;
 public class Ball : MonoBehaviourPunCallbacks
 {
     private enum State
@@ -432,6 +432,8 @@ public class Ball : MonoBehaviourPunCallbacks
         if (distance > nextMoveDistance + reflectMargin) return;
         Debug.Log("ÉvÉçÉZÉX3");
 
+
+        
         //îΩì]ÇÃì¸å˚***********************************
         //struckDirection = hitInfo.normal;
         //count = 0;
@@ -460,6 +462,7 @@ public class Ball : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient)
             {
+                StartCoroutine(DebugText("DebugText_0", name_ReflectorObject));
                 Debug.Log("WWW0");
                 photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer0", "player1", Vector3.zero, Vector3.zero, hitInfo.normal);
             }
@@ -468,6 +471,7 @@ public class Ball : MonoBehaviourPunCallbacks
         {
             if (!PhotonNetwork.IsMasterClient)
             {
+                StartCoroutine(DebugText("DebugText_1", name_ReflectorObject));
                 Debug.Log("WWW1");
                 photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer1", "player0", Vector3.zero, Vector3.zero, hitInfo.normal);
             }
@@ -495,6 +499,14 @@ public class Ball : MonoBehaviourPunCallbacks
         StartCoroutine(Reversal());
     }
 
+
+    private IEnumerator DebugText(string debugText, string T)
+    {
+        TextMeshPro text = GameObject.Find(debugText).GetComponent<TextMeshPro>();
+        text.text = T;
+        yield return new WaitForSeconds(2);
+        text.text = "ÇÌ";        
+    }
 
 
     [SerializeField] GameObject[] targets_Array = null;
