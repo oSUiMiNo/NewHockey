@@ -138,8 +138,8 @@ public class Ball : MonoBehaviourPunCallbacks
 
     private void FixedUpdate()
     {
-        ProcessStrikePower();
         if (state != State.Ready) return;
+        ProcessStrikePower();
         //if (moveState == MoveState.Reflect) StartCoroutine(Reversal());
         //if (moveState == MoveState.Move) Move();
         //if (toPlayerState != ToPlayerState.Idle) Process();
