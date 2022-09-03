@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class Avatar : MonoBehaviourPunCallbacks//, IPunInstantiateMagicCallback
+public class Avatar : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 {
     [SerializeField] private float charge = 0;
     [SerializeField] private Image gageImage = null;
@@ -42,13 +42,18 @@ public class Avatar : MonoBehaviourPunCallbacks//, IPunInstantiateMagicCallback
 
 
 
-    //public void OnPhotonInstantiate(PhotonMessageInfo info)
-    //{
-
-    //    Debug.Log("çÏÇÁÇÍÇΩ1");
-    //    SetThis(gameObject);
-    //    Debug.Log("çÏÇÁÇÍÇΩ2");
-    //}
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        if (!this.gameObject.GetPhotonView().IsMine)
+        {
+            Debug.Log("OVRÇ†Ç†Ç†Ç†Ç†Ç†Ç†Ç†Ç†Ç†Ç†Ç†11111" + this.gameObject);
+            GameObject avatar = RoomDoorWay.instance.avatar0;
+            avatar.GetComponent<OVRPlayerController>().enabled = false;
+            avatar.GetComponent<OVRSceneSampleController>().enabled = false;
+            avatar.GetComponent<OVRDebugInfo>().enabled = false;
+            avatar.transform.GetChild(3).gameObject.SetActive(false);
+        }
+    }
 
 
     //public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)

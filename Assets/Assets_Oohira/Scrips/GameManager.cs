@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private IEnumerator Init()
     {
         yield return new WaitForSeconds(3);
+        Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ");
         yield return new WaitUntil(() => RoomDoorWay.instance.Ready());
 
         Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 0");
