@@ -469,6 +469,8 @@ public class Ball : MonoBehaviourPunCallbacks
         }
         if(toPlayerState == ToPlayerState.ToPlayer1)
         {
+//            if (!PhotonNetwork.IsMasterClient)
+
             if (!PhotonNetwork.IsMasterClient)
             {
                 StartCoroutine(DebugText("DebugText_1", name_ReflectorObject));
