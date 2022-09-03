@@ -176,7 +176,7 @@ public class Ball : MonoBehaviourPunCallbacks
     private void Strike()
     {
         if (StrikePower <= 80) return;
-        
+        Debug.Log("ストライクパワー　打った");
         if (toPlayerState == ToPlayerState.ToPlayer0)
         {
             if (PhotonNetwork.IsMasterClient)
