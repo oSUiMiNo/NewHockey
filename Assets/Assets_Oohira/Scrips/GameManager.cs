@@ -9,7 +9,7 @@ using UnityEditor;
 using TMPro;
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager instance = null;
     private void Awake()
@@ -24,8 +24,28 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private IEnumerator Init()
+    {
+        yield return new WaitUntil(() => RoomDoorWay.instance.Ready());
+        if(RoomDoorWay.instance.avatar0.GetPhotonView().IsMine)
+        {
+            GameObject avatar = RoomDoorWay.instance.avatar0;
+            avatar.GetComponent<OVRPlayerController>().enabled = false;
+            avatar.GetComponent<OVRSceneSampleController>().enabled = false;
+            avatar.GetComponent<OVRDebugInfo>().enabled = false;
+            avatar.transform.GetChild(3).gameObject.SetActive(false);
+        }
+        if (RoomDoorWay.instance.avatar1.GetPhotonView().IsMine)
+        {
+            GameObject avatar = RoomDoorWay.instance.avatar1;
+            avatar.GetComponent<OVRPlayerController>().enabled = false;
+            avatar.GetComponent<OVRSceneSampleController>().enabled = false;
+            avatar.GetComponent<OVRDebugInfo>().enabled = false;
+            avatar.transform.GetChild(3).gameObject.SetActive(false);
+        }
+    }
 
-    [SerializeField] public int point_ToWin = 1;
+        [SerializeField] public int point_ToWin = 1;
     public int score_Player0 = 0;
     public int score_Player1 = 0;
     [SerializeField] public TextMeshProUGUI text_Score_Player0 = null;
