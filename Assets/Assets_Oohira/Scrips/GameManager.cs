@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         yield return new WaitUntil(() => RoomDoorWay.instance.Ready());
 
         Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 0");
-        if(RoomDoorWay.instance.avatar0.GetPhotonView().IsMine)
+        if(!RoomDoorWay.instance.avatar0.GetPhotonView().IsMine)
         {
             Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 1");
             GameObject avatar = RoomDoorWay.instance.avatar0;
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             avatar.GetComponent<OVRDebugInfo>().enabled = false;
             avatar.transform.GetChild(3).gameObject.SetActive(false);
         }
-        if (RoomDoorWay.instance.avatar1.GetPhotonView().IsMine)
+        if (!RoomDoorWay.instance.avatar1.GetPhotonView().IsMine)
         {
             Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 2");
             GameObject avatar = RoomDoorWay.instance.avatar1;
