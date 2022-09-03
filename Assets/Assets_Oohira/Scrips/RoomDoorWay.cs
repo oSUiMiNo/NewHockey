@@ -135,7 +135,7 @@ public class RoomDoorWay : MonoBehaviourPunCallbacks
             {
                 //Debug.Log("©•ª‚ÍQ‰ÁÒ4");
                 //Debug.Log("©•ª‚ÌF‚Í”’ OnRoomPropertiesUpdate");
-                //PhotonNetwork.Instantiate("Avatar0", new Vector3(0f, 5f, -80f), Quaternion.identity);
+                PhotonNetwork.Instantiate("Avatar0", new Vector3(0f, 5f, -80f), Quaternion.identity);
             }
         }
     }
