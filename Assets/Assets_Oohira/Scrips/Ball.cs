@@ -51,6 +51,11 @@ public class Ball : MonoBehaviourPunCallbacks
     Rigidbody rb;
     [SerializeField] bool visualizeSphereCast = false;
     [SerializeField] GameObject sphereCast;
+
+    [SerializeField] TextMeshPro debugT0;
+    [SerializeField] TextMeshPro debugT1;
+
+
     int randomNumber;
     [SerializeField] private Vector3 firstDirection;
     [SerializeField] private Vector3 struckDirection;
@@ -93,6 +98,8 @@ public class Ball : MonoBehaviourPunCallbacks
         yield return new WaitUntil(() => state == State.BothReady);
         //yield return new WaitForSeconds(1);
 
+        debugT0 = GameObject.Find("DebugText_0").GetComponent<TextMeshPro>();
+        debugT1 = GameObject.Find("DebugText_1").GetComponent<TextMeshPro>();
 
         line0 = GameObject.Find("Lines_Player0");
         line1 = GameObject.Find("Lines_Player1");
@@ -502,12 +509,11 @@ public class Ball : MonoBehaviourPunCallbacks
     }
 
 
-    private IEnumerator DebugText(string debugText, string T)
+    private IEnumerator DebugText_0(string T)
     {
-        TextMeshPro text = GameObject.Find(debugText).GetComponent<TextMeshPro>();
-        text.text = T;
+        debugT0.text = T;
         yield return new WaitForSeconds(2);
-        text.text = "‚í";        
+        debugT0.text = "‚í";        
     }
 
 
