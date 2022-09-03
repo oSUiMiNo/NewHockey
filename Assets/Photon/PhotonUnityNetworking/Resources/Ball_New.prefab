@@ -70,6 +70,8 @@ MonoBehaviour:
   positiveZAxis: {x: 0, y: 0, z: 0}
   visualizeSphereCast: 1
   sphereCast: {fileID: 0}
+  debugT0: {fileID: 0}
+  debugT1: {fileID: 0}
   firstDirection: {x: 0, y: 1, z: 0.5}
   struckDirection: {x: 0, y: 0, z: 0}
   speed: 27
@@ -89,6 +91,10 @@ MonoBehaviour:
   "\u53CD\u8EE2\u3057\u305F\u56DE\u6570": 0
   player0Ready: 0
   player1Ready: 0
+  CurrentRacketPosition: {x: 0, y: 0, z: 0}
+  LastRacketPosition: {x: 0, y: 0, z: 0}
+  StrikePower: 0
+  debugStrikePower: 0
   layerMask_Wall:
     serializedVersion: 2
     m_Bits: 1024
