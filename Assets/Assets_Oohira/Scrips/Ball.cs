@@ -143,15 +143,17 @@ public class Ball : MonoBehaviourPunCallbacks
         //if (moveState == MoveState.Reflect) StartCoroutine(Reversal());
         //if (moveState == MoveState.Move) Move();
         //if (toPlayerState != ToPlayerState.Idle) Process();
-        if (toPlayerState != ToPlayerState.Idle)
-        {
-            Strike();
-        }
     }
 
     private void Update()
     {
+        if (state != State.Ready) return;
+
         ProcessStrikePower();
+        if (toPlayerState != ToPlayerState.Idle)
+        {
+            Strike();
+        }
     }
 
     [SerializeField] Vector3 CurrentRacketPosition;
@@ -164,8 +166,8 @@ public class Ball : MonoBehaviourPunCallbacks
 
         if (LastRacketPosition != null)
         {
-            Debug.Log("ストライクパワー");
-            StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude * 50;
+            StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude * 30;
+            Debug.Log("ストライクパワー" + StrikePower);
         }
 
         debugStrikePower = StrikePower * 100;
