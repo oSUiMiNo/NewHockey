@@ -47,7 +47,7 @@ public class Avatar : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
         if (!this.gameObject.GetPhotonView().IsMine)
         {
             Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 11111" + this.gameObject);
-            GameObject avatar = RoomDoorWay.instance.avatar0;
+            GameObject avatar = this.gameObject;
             avatar.GetComponent<OVRPlayerController>().enabled = false;
             avatar.GetComponent<OVRSceneSampleController>().enabled = false;
             avatar.GetComponent<OVRDebugInfo>().enabled = false;
