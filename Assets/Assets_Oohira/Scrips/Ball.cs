@@ -511,6 +511,9 @@ public class Ball : MonoBehaviourPunCallbacks
 
     private IEnumerator DebugText_0(string T)
     {
+        Debug.Log(T);
+        Debug.Log(debugT0);
+        Debug.Log(debugT0.text);
         debugT0.text = T;
         yield return new WaitForSeconds(2);
         debugT0.text = "‚í";        
@@ -518,9 +521,12 @@ public class Ball : MonoBehaviourPunCallbacks
 
     private IEnumerator DebugText_1(string T)
     {
-        debugT0.text = T;
+        Debug.Log(T);
+        Debug.Log(debugT1);
+        Debug.Log(debugT1.text);
+        debugT1.text = T;
         yield return new WaitForSeconds(2);
-        debugT0.text = "‚í";
+        debugT1.text = "‚í";
     }
 
 
