@@ -469,7 +469,7 @@ public class Ball : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                StartCoroutine(DebugText("DebugText_0", name_ReflectorObject));
+                StartCoroutine(DebugText_0(name_ReflectorObject));
                 Debug.Log("WWW0");
                 photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer0", "player1", Vector3.zero, Vector3.zero, hitInfo.normal);
             }
@@ -480,7 +480,7 @@ public class Ball : MonoBehaviourPunCallbacks
 
             if (!PhotonNetwork.IsMasterClient)
             {
-                StartCoroutine(DebugText("DebugText_1", name_ReflectorObject));
+                StartCoroutine(DebugText_1(name_ReflectorObject));
                 Debug.Log("WWW1");
                 photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer1", "player0", Vector3.zero, Vector3.zero, hitInfo.normal);
             }
@@ -514,6 +514,13 @@ public class Ball : MonoBehaviourPunCallbacks
         debugT0.text = T;
         yield return new WaitForSeconds(2);
         debugT0.text = "‚í";        
+    }
+
+    private IEnumerator DebugText_1(string T)
+    {
+        debugT0.text = T;
+        yield return new WaitForSeconds(2);
+        debugT0.text = "‚í";
     }
 
 
