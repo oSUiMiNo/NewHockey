@@ -81,7 +81,7 @@ public class Reflector_Racket : Reflector
             {
                 //Speed = GetAcc().magnitude;
                 //Speed = OVRInput.GetLocalControllerAcceleration(controller).magnitude;
-                //Speed = StrikePower * 100;
+                Speed = StrikePower * 100;
                 ball.GetComponent<Rigidbody>().velocity = impactPointOverlay.transform.forward * Speed;
                 ballMove.changeSpeed = Speed;
 

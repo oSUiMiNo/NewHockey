@@ -141,9 +141,71 @@ public class Ball : MonoBehaviourPunCallbacks
         if (state != State.Ready) return;
         //if (moveState == MoveState.Reflect) StartCoroutine(Reversal());
         //if (moveState == MoveState.Move) Move();
-        if (toPlayerState != ToPlayerState.Idle) Process();
+        //if (toPlayerState != ToPlayerState.Idle) Process();
+        if (toPlayerState != ToPlayerState.Idle)
+        {
+            ProcessStrikePower();
+            Strike();
+        }
     }
 
+    [SerializeField] Vector3 CurrentRacketPosition;
+    [SerializeField] Vector3 LastRacketPosition;
+    [SerializeField] float StrikePower;
+    [SerializeField] float debugStrikePower;
+    private void ProcessStrikePower()
+    {
+        CurrentRacketPosition = this.transform.position;
+
+        if (LastRacketPosition != null) StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude;
+        
+        debugStrikePower = StrikePower * 100;
+        LastRacketPosition = CurrentRacketPosition;
+    }
+    private void Strike()
+    {
+        if (StrikePower <= 80) return;
+        
+        if (toPlayerState == ToPlayerState.ToPlayer0)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(DebugText_0("Racket0"));
+                photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer0", "player1", Vector3.zero, Vector3.zero, new Vector3(1, 0.5f, 0.8f).normalized);
+            }
+        }
+        if (toPlayerState == ToPlayerState.ToPlayer1)
+        {
+            //            if (!PhotonNetwork.IsMasterClient)
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(DebugText_1("Racket1"));
+                photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer1", "player0", Vector3.zero, Vector3.zero, new Vector3(1, 0.5f, -0.8f).normalized);
+            }
+        }
+    }
+
+
+
+    [PunRPC]
+    private void W(string strikeState, string owner_Ball, Vector3 lastPoint, Vector3 lastNormal, Vector3 struckDirection)
+    {
+        toPlayerState = ToPlayerState.Idle;
+
+        Debug.Log("WWW2");
+        Enum.TryParse(strikeState, out StrikeState S); Debug.Log(S);
+        Enum.TryParse(owner_Ball, out Owners O); Debug.Log(O);
+
+        this.strikeState = S;
+        this.owner_Ball = O;
+
+        this.lastPoint = lastPoint;  //ëOÇÃç≈å„
+        this.lastNormal = lastNormal;  //ëOÇÃñ@ê¸
+        this.struckDirection = struckDirection;
+
+        StartCoroutine(Reversal());
+    }
     private IEnumerator Reversal()
     {
         if (state != State.BothReady) îΩì]ÇµÇΩâÒêî++;
@@ -154,7 +216,6 @@ public class Ball : MonoBehaviourPunCallbacks
         //yield return new WaitUntil(() => moveState == MoveState.Idle);
         //if (PhotonNetwork.IsMasterClient) photonView.RPC(nameof(Reversal_1), RpcTarget.All);
     }
-   
     [PunRPC]
     private void Reversal_0(Vector3 point_0, Vector3 normal_0)
     {
@@ -201,23 +262,6 @@ public class Ball : MonoBehaviourPunCallbacks
         moveState = MoveState.Move;
 
     }
-    [PunRPC]
-    private void Reversal_1()
-    {
-        Debug.Log("îΩì]ÇÃèâä˙âª2");
-        for (int a = 1; a < passingPointsVolume; a++)
-        {
-            ProcessReflect_Middle(a);
-        }
-        for (int a = 1; a < passingPointsVolume + 1; a++)
-        {
-            StartCoroutine(Wait(a));
-        }
-        //StartCoroutine(Wait(passingPointsVolume));
-        Debug.Log("îΩì]ÇÃèâä˙âª3");
-        moveState = MoveState.Move;
-    }
-
 
         Vector3 outDirection = Vector3.zero;
     private void ProcessReflect_Middle(int a)
@@ -489,31 +533,12 @@ public class Ball : MonoBehaviourPunCallbacks
 
     
 
-    [PunRPC]
-    private void W(string strikeState, string owner_Ball,  Vector3 lastPoint, Vector3 lastNormal, Vector3 struckDirection)
-    {
-        toPlayerState = ToPlayerState.Idle;
 
-        Debug.Log("WWW2");
-        Enum.TryParse(strikeState, out StrikeState S); Debug.Log(S);
-        Enum.TryParse(owner_Ball, out Owners O); Debug.Log(O);
-
-        this.strikeState = S;
-        this.owner_Ball = O;
-
-        this.lastPoint = lastPoint;  //ëOÇÃç≈å„
-        this.lastNormal = lastNormal;  //ëOÇÃñ@ê¸
-        this.struckDirection = struckDirection;
-        
-        StartCoroutine(Reversal());
-    }
 
 
     private IEnumerator DebugText_0(string T)
     {
         Debug.Log(T);
-        Debug.Log(debugT0);
-        Debug.Log(debugT0.text);
         debugT0.text = T;
         yield return new WaitForSeconds(2);
         debugT0.text = "ÇÌ";        
@@ -521,8 +546,6 @@ public class Ball : MonoBehaviourPunCallbacks
     private IEnumerator DebugText_1(string T)
     {
         Debug.Log(T);
-        Debug.Log(debugT1);
-        Debug.Log(debugT1.text);
         debugT1.text = T;
         yield return new WaitForSeconds(2);
         debugT1.text = "ÇÌ";
