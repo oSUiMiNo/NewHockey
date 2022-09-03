@@ -51,7 +51,7 @@ public class Avatar : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             avatar.GetComponent<OVRPlayerController>().enabled = false;
             avatar.GetComponent<OVRSceneSampleController>().enabled = false;
             avatar.GetComponent<OVRDebugInfo>().enabled = false;
-            avatar.transform.GetChild(3).gameObject.SetActive(false);
+            avatar.transform.GetChild(3).GetComponent<OVRManager>().enabled = false;
         }
     }
 

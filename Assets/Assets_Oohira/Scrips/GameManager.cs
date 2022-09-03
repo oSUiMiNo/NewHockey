@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Destroy(gameObject);
         }
-        StartCoroutine(Init());
+        //StartCoroutine(Init());
     }
     private IEnumerator Init()
     {
