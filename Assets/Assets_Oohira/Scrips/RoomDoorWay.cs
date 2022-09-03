@@ -113,7 +113,7 @@ public class RoomDoorWay : MonoBehaviourPunCallbacks
             if (randomNumber == 0)
             {
                 //Debug.Log("マスターの色は白 OnRoomPropertiesUpdate");
-                PhotonNetwork.Instantiate("Avatar0", new Vector3(0f, 5f, -80f), Quaternion.identity);
+                //PhotonNetwork.Instantiate("Avatar0", new Vector3(0f, 5f, -80f), Quaternion.identity);
             }
             else
             {
@@ -135,7 +135,7 @@ public class RoomDoorWay : MonoBehaviourPunCallbacks
             {
                 //Debug.Log("自分は参加者4");
                 //Debug.Log("自分の色は白 OnRoomPropertiesUpdate");
-                PhotonNetwork.Instantiate("Avatar0", new Vector3(0f, 5f, -80f), Quaternion.identity);
+                //PhotonNetwork.Instantiate("Avatar0", new Vector3(0f, 5f, -80f), Quaternion.identity);
             }
         }
     }
