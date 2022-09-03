@@ -23,12 +23,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Destroy(gameObject);
         }
+        StartCoroutine(Init());
     }
     private IEnumerator Init()
     {
         yield return new WaitUntil(() => RoomDoorWay.instance.Ready());
+
+        Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 0");
         if(RoomDoorWay.instance.avatar0.GetPhotonView().IsMine)
         {
+            Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 1");
             GameObject avatar = RoomDoorWay.instance.avatar0;
             avatar.GetComponent<OVRPlayerController>().enabled = false;
             avatar.GetComponent<OVRSceneSampleController>().enabled = false;
@@ -37,6 +41,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         if (RoomDoorWay.instance.avatar1.GetPhotonView().IsMine)
         {
+            Debug.Log("OVR‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ 2");
             GameObject avatar = RoomDoorWay.instance.avatar1;
             avatar.GetComponent<OVRPlayerController>().enabled = false;
             avatar.GetComponent<OVRSceneSampleController>().enabled = false;
