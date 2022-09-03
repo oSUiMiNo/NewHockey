@@ -138,13 +138,13 @@ public class Ball : MonoBehaviourPunCallbacks
 
     private void FixedUpdate()
     {
+        ProcessStrikePower();
         if (state != State.Ready) return;
         //if (moveState == MoveState.Reflect) StartCoroutine(Reversal());
         //if (moveState == MoveState.Move) Move();
         //if (toPlayerState != ToPlayerState.Idle) Process();
         if (toPlayerState != ToPlayerState.Idle)
         {
-            ProcessStrikePower();
             Strike();
         }
     }
@@ -155,7 +155,7 @@ public class Ball : MonoBehaviourPunCallbacks
     [SerializeField] float debugStrikePower;
     private void ProcessStrikePower()
     {
-        CurrentRacketPosition = this.transform.position;
+        CurrentRacketPosition = racket0.transform.position;
 
         if (LastRacketPosition != null) StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude;
         
