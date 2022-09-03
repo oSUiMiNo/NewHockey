@@ -165,7 +165,7 @@ public class Ball : MonoBehaviourPunCallbacks
         if (LastRacketPosition != null)
         {
             Debug.Log("ストライクパワー");
-            StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude;
+            StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude * 50;
         }
 
         debugStrikePower = StrikePower * 100;
