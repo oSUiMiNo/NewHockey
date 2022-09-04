@@ -51,6 +51,7 @@ public class Ball : MonoBehaviourPunCallbacks
     Rigidbody rb;
     [SerializeField] bool visualizeSphereCast = false;
     [SerializeField] GameObject sphereCast;
+    [SerializeField] GameObject ballWay;
 
     [SerializeField] TextMeshProUGUI debugT0;
     [SerializeField] TextMeshProUGUI debugT1;
@@ -96,7 +97,8 @@ public class Ball : MonoBehaviourPunCallbacks
         yield return new WaitUntil(() => RoomDoorWay.instance.Ready());
         StartCoroutine(ConfirmPreparation());
         yield return new WaitUntil(() => state == State.BothReady);
-        //yield return new WaitForSeconds(1);
+        //yield return new WaitForSeconds(1); 
+        //state = State.BothReady;
 
         debugT0 = GameObject.Find("DebugText_0").GetComponent<TextMeshProUGUI>();
         debugT1 = GameObject.Find("DebugText_1").GetComponent<TextMeshProUGUI>();
@@ -149,7 +151,7 @@ public class Ball : MonoBehaviourPunCallbacks
     {
         if (state != State.Ready) return;
 
-        ProcessStrikePower();
+        Process_StrikePower();
         if (toPlayerState != ToPlayerState.Idle)
         {
             Strike();
@@ -159,15 +161,16 @@ public class Ball : MonoBehaviourPunCallbacks
     [SerializeField] Vector3 CurrentRacketPosition;
     [SerializeField] Vector3 LastRacketPosition;
     [SerializeField] float StrikePower;
+    [SerializeField] float StrikeDirection;
     [SerializeField] float debugStrikePower;
-    private void ProcessStrikePower()
+    private void Process_StrikePower()
     {
         CurrentRacketPosition = racket0.transform.position;
 
         if (LastRacketPosition != null)
         {
             StrikePower = (LastRacketPosition - CurrentRacketPosition).magnitude * 1000;
-            Debug.Log("ストライクパワー" + StrikePower);
+            //Debug.Log("ストライクパワー" + StrikePower);
         }
 
         debugStrikePower = StrikePower * 100;
@@ -175,23 +178,23 @@ public class Ball : MonoBehaviourPunCallbacks
     }
     private void Strike()
     {
-        if (StrikePower <= 80) return;
-        Debug.Log("ストライクパワー　打った");
+        if (StrikePower <= -1) return;
+        //Debug.Log("ストライクパワー　打った");
         if (toPlayerState == ToPlayerState.ToPlayer0)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                StartCoroutine(DebugText_0("Racket0"));
+                StartCoroutine(DebugText_0("Racket0")); Debug.Log("Racket0");
                 photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer0", "player1", Vector3.zero, Vector3.zero, new Vector3(1, 0.5f, 0.8f).normalized);
             }
         }
         if (toPlayerState == ToPlayerState.ToPlayer1)
         {
-            //            if (!PhotonNetwork.IsMasterClient)
+            //if (!PhotonNetwork.IsMasterClient)
 
             if (PhotonNetwork.IsMasterClient)
             {
-                StartCoroutine(DebugText_1("Racket1"));
+                StartCoroutine(DebugText_1("Racket1")); Debug.Log("Racket1");
                 photonView.RPC(nameof(W), RpcTarget.All, "StruckByPlayer1", "player0", Vector3.zero, Vector3.zero, new Vector3(1, 0.5f, -0.8f).normalized);
             }
         }
@@ -210,6 +213,7 @@ public class Ball : MonoBehaviourPunCallbacks
 
         this.strikeState = S;
         this.owner_Ball = O;
+        Debug.Log(this.owner_Ball);
 
         this.lastPoint = lastPoint;  //前の最後
         this.lastNormal = lastNormal;  //前の法線
@@ -217,22 +221,23 @@ public class Ball : MonoBehaviourPunCallbacks
 
         StartCoroutine(Reversal());
     }
+
+
     private IEnumerator Reversal()
     {
         if (state != State.BothReady) 反転した回数++;
         Debug.Log("反転した回数" + 反転した回数);
         yield return new WaitForSeconds(0);
         if (PhotonNetwork.IsMasterClient) photonView.RPC(nameof(Reversal_0), RpcTarget.All, transform.position + lastNormal * margin, lastNormal);
-
-        //yield return new WaitUntil(() => moveState == MoveState.Idle);
-        //if (PhotonNetwork.IsMasterClient) photonView.RPC(nameof(Reversal_1), RpcTarget.All);
     }
-    [PunRPC]
+    [PunRPC]//**************************************
     private void Reversal_0(Vector3 point_0, Vector3 normal_0)
     {
         transform.position = point_0;
 
         Debug.Log("反転の初期化0");
+        //passingPointsVolume = 0;
+       
         count = 0;
         points.Clear();
         normals.Clear();
@@ -241,8 +246,25 @@ public class Ball : MonoBehaviourPunCallbacks
 
         points.Add(point_0);
         normals.Add(normal_0);
-        ProcessReflect_Middle(0);
-        StartCoroutine(Wait(0));
+        if(moveState == MoveState.First)
+        {
+            Process_Reflect_Middle(0);
+            StartCoroutine(Wait(0));
+        }
+        else
+        {
+            if (strikeState != StrikeState.Idle)
+            {
+                Debug.Log("反射の角度計算1");
+                outDirection = struckDirection.normalized;
+            }
+            else
+            {
+                Debug.Log("反射の角度計算2");
+                Vector3 inDirection = (points[0] - lastPoint).normalized;
+                outDirection = (OutDestination_General(inDirection, normals[0]) - points[0]).normalized;
+            }
+        }
 
         if (owner_Ball == Owners.player0) positiveZAxis.z = -1;
         else                              positiveZAxis.z = 1;
@@ -256,28 +278,47 @@ public class Ball : MonoBehaviourPunCallbacks
         else if (reflectAngle >= 20) passingPointsVolume = 3;
         else if (reflectAngle >= 9) passingPointsVolume = 2;
         else passingPointsVolume = 1;
+        Debug.Log(reflectAngle);
 
-        moveState = MoveState.Idle;
 
         Debug.Log("反転の初期化2");
-        for (int a = 1; a < passingPointsVolume; a++)
+        if(moveState == MoveState.First)
         {
-            ProcessReflect_Middle(a);
+            moveState = MoveState.Idle;
+            for (int a = 1; a < passingPointsVolume; a++)
+            {
+                Process_Reflect_Middle(a);
+            }
+            for (int a = 1; a < passingPointsVolume + 1; a++)
+            {
+                StartCoroutine(Wait(a));
+            }
         }
-        for (int a = 1; a < passingPointsVolume + 1; a++)
+        else
         {
-            StartCoroutine(Wait(a));
+            for (int a = 0; a < passingPointsVolume; a++)
+            {
+                Debug.Log("きゃー0" + ", " + a);
+                Process_Reflect_Middle(a);
+            }
+            for (int a = 0; a < passingPointsVolume + 1; a++)
+            {
+                Debug.Log("きゃー1" + ", " + a);
+                StartCoroutine(Wait(a));
+            }
         }
-        //StartCoroutine(Wait(passingPointsVolume));
+
         Debug.Log("反転の初期化3");
         moveState = MoveState.Move;
-
     }
 
+
+
         Vector3 outDirection = Vector3.zero;
-    private void ProcessReflect_Middle(int a)
+    private void Process_Reflect_Middle(int a)
     {
         Color rayColor = Color.white;
+        float rayTime = 0;
         float radius = transform.localScale.x / 2;
         RaycastHit hitInfo;
         if (a < passingPointsVolume - 1 && passingPointsVolume != 1)                                //最後のカウント以外
@@ -318,6 +359,7 @@ public class Ball : MonoBehaviourPunCallbacks
                 }
             }
             rayColor = Color.red;
+            rayTime = 5f;
             strikeState = StrikeState.Idle;
         }
         else if (a == passingPointsVolume - 1)                      //最後のカウントの時
@@ -325,11 +367,12 @@ public class Ball : MonoBehaviourPunCallbacks
             Debug.Log("Final  " + a);
             outDirection = (GetPlayerTargetPosition() - points[a]).normalized;
             rayColor = Color.blue;
+            rayTime = 8;
         }
         Debug.Log("レイ飛ばす方向  " + outDirection + ", レイの原点  " + points[a]);
         Physics.SphereCast(points[a], radius, outDirection, out hitInfo, 10000f, layerMask_Wall);
         Debug.Log("レイ当たった場所  " + hitInfo.point + ", レイの長さ  " + hitInfo.distance);
-        Debug.DrawRay(points[a], outDirection * hitInfo.distance, rayColor, 8f, false);
+        Debug.DrawRay(points[a], outDirection * hitInfo.distance, rayColor, rayTime, false);
         Debug.DrawRay(points[a], outDirection * 5, Color.green, 2f, false);
         //Instantiate(sphereCast, hitInfo.point + hitInfo.normal * margin, Quaternion.identity);
         //if (a + 1 < points.Length) Debug.Log("次のインデックス  " + (a + 1));
@@ -343,9 +386,9 @@ public class Ball : MonoBehaviourPunCallbacks
         //Debug.Log("Wait0  " + a);
         if (count <= passingPointsVolume)   //カウントが0～インデックスの最大+1まで
         {
-            //Debug.Log("Wait1-0  " + a);
+            Debug.Log("Wait1-0  " + a + ", " + points.Count() + ", " + points[a]);
             yield return new WaitUntil(() => transform.position == points[a]);
-            //Debug.Log("Wait1-1  " + a);
+            Debug.Log("Wait1-1  " + a + ", " + points.Count() + ", " + points[a]);
             count++;
             //Debug.Log("Count  " + count);
             if (count == passingPointsVolume)
@@ -359,9 +402,9 @@ public class Ball : MonoBehaviourPunCallbacks
         //反転の入口***********************************
         if (count == passingPointsVolume + 1)
         {
-            //Debug.Log("Wait2-0  " + a);
+            Debug.Log("Wait2-0  " + a);
             yield return new WaitUntil(() => transform.position == points[a]);
-            //Debug.Log("Wait2-1  " + a);
+            Debug.Log("Wait2-1  " + a);
 
             if (toPlayerState == ToPlayerState.ToPlayer0)
             {
@@ -373,7 +416,8 @@ public class Ball : MonoBehaviourPunCallbacks
             }
             if(toPlayerState == ToPlayerState.ToPlayer1)
             {
-                if (!PhotonNetwork.IsMasterClient)
+                //if (!PhotonNetwork.IsMasterClient)
+                if (PhotonNetwork.IsMasterClient)
                 {
                     Debug.Log("WWWWWW1");
                     photonView.RPC(nameof(W), RpcTarget.All, "Idle", "player0", points[a - 1], normals[a], Vector3.zero);
@@ -461,11 +505,11 @@ public class Ball : MonoBehaviourPunCallbacks
     [SerializeField] int count_ProcessForwardDetection = 0;
     private void Process()
     {
-        ProcessRacketDetection("Racket1", layerMask_Racket_Collider, 2f);
-        ProcessRacketDetection("Racket0", layerMask_Racket_Collider, 1f);
+        Process_RacketDetection("Racket1", layerMask_Racket_Collider, 2f);
+        Process_RacketDetection("Racket0", layerMask_Racket_Collider, 1f);
         count_ProcessForwardDetection = 0;
     }
-    private void ProcessRacketDetection(string name_ReflectorObject, LayerMask layerMask, float reflectMargin)
+    private void Process_RacketDetection(string name_ReflectorObject, LayerMask layerMask, float reflectMargin)
     {
         Vector3 velocity = rb.velocity;
 

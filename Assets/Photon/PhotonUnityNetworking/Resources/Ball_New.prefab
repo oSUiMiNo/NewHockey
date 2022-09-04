@@ -70,11 +70,12 @@ MonoBehaviour:
   positiveZAxis: {x: 0, y: 0, z: 0}
   visualizeSphereCast: 1
   sphereCast: {fileID: 0}
+  ballWay: {fileID: 0}
   debugT0: {fileID: 0}
   debugT1: {fileID: 0}
-  firstDirection: {x: 0, y: 1, z: 0.5}
+  firstDirection: {x: 0, y: -1, z: 0.5}
   struckDirection: {x: 0, y: 0, z: 0}
-  speed: 27
+  speed: 100
   margin: 1
   racket0: {fileID: 0}
   racket1: {fileID: 0}
@@ -94,6 +95,7 @@ MonoBehaviour:
   CurrentRacketPosition: {x: 0, y: 0, z: 0}
   LastRacketPosition: {x: 0, y: 0, z: 0}
   StrikePower: 0
+  StrikeDirection: 0
   debugStrikePower: 0
   layerMask_Wall:
     serializedVersion: 2
