@@ -178,7 +178,7 @@ public class Ball : MonoBehaviourPunCallbacks
     }
     private void Strike()
     {
-        if (StrikePower <= -1) return;
+        if (StrikePower <= 50) return;
         //Debug.Log("ストライクパワー　打った");
         if (toPlayerState == ToPlayerState.ToPlayer0)
         {
